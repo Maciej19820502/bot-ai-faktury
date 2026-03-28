@@ -233,6 +233,109 @@ E-mail eskalacji konfiguruje się w panelu (zakładka Konfiguracja).
 
 ---
 
+## Etap 9: Pobranie projektu z GitHuba (alternatywna ścieżka)
+
+Jeśli nie budujesz projektu od zera, tylko chcesz uruchomić gotowy prototyp,
+wystarczy go pobrać z repozytorium:
+
+### 9.1 Sklonuj repozytorium
+
+```
+git clone https://github.com/Maciej19820502/bot-ai-faktury.git
+cd bot-ai-faktury
+```
+
+### 9.2 Zainstaluj zależności
+
+```
+pip install -r requirements.txt
+```
+
+### 9.3 Utwórz plik konfiguracyjny
+
+Skopiuj szablon konfiguracji:
+```
+cp config.example.json config.json
+```
+
+### 9.4 Uruchom aplikację
+
+```
+python run.py
+```
+
+### 9.5 Wpisz klucze w panelu
+
+Otwórz **http://localhost:5000/config** i uzupełnij:
+- Adres Gmail i App Password (patrz Etap 5.1 jak je wygenerować)
+- Klucz API Anthropic
+- Autoryzowane domeny klientów
+- E-mail eskalacji
+
+Od tego momentu bot jest gotowy do pracy.
+
+---
+
+## Etap 10: Publikacja na GitHubie
+
+Jeśli budujesz własną wersję i chcesz ją udostępnić:
+
+### 10.1 Zainstaluj narzędzia
+
+- **Git** — https://git-scm.com/downloads
+- **GitHub CLI** — https://cli.github.com (ułatwia tworzenie repozytoriów z terminala)
+
+Po instalacji zaloguj się:
+```
+gh auth login
+```
+
+### 10.2 Bezpieczeństwo — co nie trafia na GitHuba
+
+Plik `.gitignore` automatycznie wyklucza wrażliwe dane:
+
+| Plik | Co zawiera | Trafia na GitHub? |
+|------|-----------|-------------------|
+| `config.json` | klucze Gmail, Anthropic, domeny | **NIE** |
+| `.env` | zmienne środowiskowe | **NIE** |
+| `bot.db` | logi z adresami e-mail | **NIE** |
+| `bot.log` | dziennik operacji | **NIE** |
+| `token.json` | token OAuth | **NIE** |
+| `config.example.json` | szablon konfiguracji (puste klucze) | TAK |
+
+**Nigdy nie commituj prawdziwych haseł ani kluczy API.** Jeśli przypadkowo to zrobisz,
+samo usunięcie pliku nie wystarczy — historia Git zachowuje wszystkie wersje.
+W takiej sytuacji natychmiast zmień hasło / wygeneruj nowy klucz.
+
+### 10.3 Utwórz repozytorium i wypchnij kod
+
+W Claude Code możesz po prostu powiedzieć:
+
+> "Załóż publiczne repo na GitHubie i wypchnij kod"
+
+Claude sam wykona potrzebne komendy (`git init`, `git add`, `git commit`, `gh repo create`, `git push`).
+
+Ręcznie wygląda to tak:
+```
+git init
+git add .
+git commit -m "Prototyp Bot AI — obsługa zapytań AP/AR"
+gh repo create bot-ai-faktury --public --source=. --remote=origin --push
+```
+
+### 10.4 Aktualizacja repozytorium
+
+Po wprowadzeniu zmian w kodzie:
+```
+git add .
+git commit -m "Opis zmian"
+git push
+```
+
+Lub po prostu powiedz Claude Code: *"Zcommituj zmiany i wypchnij na GitHub"*.
+
+---
+
 ## Podsumowanie: co Claude Code zrobił za nas
 
 | Zadanie | Czy Claude to zrobił? |
