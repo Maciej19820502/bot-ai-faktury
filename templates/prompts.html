@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Edycja promptów — Bot AI{% endblock %}
+
+{% block content %}
+<h2>Edycja promptów AI</h2>
+
+<form method="post" action="/prompts">
+    <h3>Prompt klasyfikacji</h3>
+    <p><small>Ten prompt decyduje, czy wiadomość dotyczy statusu faktury. LLM zwraca JSON z polami: is_invoice_query, invoice_numbers, confidence.</small></p>
+    <textarea name="classification_prompt" rows="10">{{ config.classification_prompt }}</textarea>
+
+    <h3>Prompt odpowiedzi</h3>
+    <p><small>Ten prompt generuje treść odpowiedzi e-mail. Otrzymuje dane fakturowe i oryginalną wiadomość klienta.</small></p>
+    <textarea name="response_prompt" rows="12">{{ config.response_prompt }}</textarea>
+
+    <h3>Podgląd zabezpieczeń (sanityzacja)</h3>
+    <article>
+        <p>System automatycznie:</p>
+        <ul>
+            <li>Usuwa próby prompt injection (np. "ignore previous instructions")</li>
+            <li>Obcina treść do {{ config.max_email_length }} znaków</li>
+            <li>Opakowuje treść klienta w tag <code>&lt;user_email&gt;</code></li>
+            <li>Usuwa znaki kontrolne</li>
+        </ul>
+    </article>
+
+    <button type="submit">Zapisz prompty</button>
+</form>
+
+<h3>Test sanityzacji</h3>
+<form method="post" action="/test-sanitize">
+    <label for="test_input">Wklej tekst do przetestowania:</label>
+    <textarea name="test_input" rows="4" id="test_input">{{ test_input or '' }}</textarea>
+    <button type="submit" class="secondary">Testuj sanityzację</button>
+</form>
+{% if sanitized_output is defined %}
+<article>
+    <header>Wynik sanityzacji</header>
+    <pre>{{ sanitized_output }}</pre>
+</article>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Bot AI{% endblock %}
+
+{% block content %}
+<h2>Dashboard</h2>
+
+<div class="grid">
+    <article>
+        <header>Status pollera</header>
+        <p><strong>{{ poller_status }}</strong></p>
+        <p>Interwał: co {{ polling_interval }}s</p>
+    </article>
+    <article>
+        <header>Ostatnie 24h</header>
+        <p>Przetworzonych: <strong>{{ stats.total }}</strong></p>
+        <p>Odpowiedzi: <strong>{{ stats.replied }}</strong></p>
+        <p>Błędów: <strong>{{ stats.errors }}</strong></p>
+    </article>
+    <article>
+        <header>Szybkie akcje</header>
+        <form method="post" action="/poll-now">
+            <button type="submit">Sprawdź maile teraz</button>
+        </form>
+    </article>
+</div>
+
+<h3>Ostatnia aktywność</h3>
+<figure>
+<table>
+    <thead>
+        <tr>
+            <th>Czas</th>
+            <th>Nadawca</th>
+            <th>Temat</th>
+            <th>Klasyfikacja</th>
+            <th>Autoryzacja</th>
+            <th>Faktury</th>
+            <th>Akcja</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.timestamp[:19] }}</td>
+            <td>{{ log.sender_email }}</td>
+            <td>{{ log.subject[:40] }}</td>
+            <td>{{ log.classification }}</td>
+            <td>{{ "Tak" if log.authorized else "Nie" }}</td>
+            <td>{{ log.invoices_found or log.invoice_numbers or "-" }}</td>
+            <td>
+                {% if log.action_taken == "replied" %}
+                    <span style="color:green">odpowiedź</span>
+                {% elif log.action_taken == "error" %}
+                    <span style="color:red">błąd</span>
+                {% elif log.action_taken == "rejected_unauthorized" %}
+                    <span style="color:orange">brak uprawnień</span>
+                {% else %}
+                    {{ log.action_taken }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        {% if not logs %}
+        <tr><td colspan="7">Brak wpisów. Poller oczekuje na wiadomości.</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+</figure>
+{% endblock %}

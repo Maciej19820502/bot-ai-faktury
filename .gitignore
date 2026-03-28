@@ -1,0 +1,18 @@
+# Dane wrażliwe
+.env
+config.json
+token.json
+credentials.json
+
+# Baza danych i logi
+bot.db
+bot.log
+
+# Python
+__pycache__/
+*.pyc
+
+# System
+.DS_Store
+Thumbs.db
+~$*

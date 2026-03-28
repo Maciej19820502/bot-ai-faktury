@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Konfiguracja — Bot AI{% endblock %}
+
+{% block content %}
+<h2>Konfiguracja systemu</h2>
+
+<form method="post" action="/config">
+    <h3>Połączenie z Gmail</h3>
+
+    <label for="gmail_user">Adres Gmail</label>
+    <input type="email" id="gmail_user" name="gmail_user"
+           value="{{ config.gmail_user or '' }}" placeholder="twoj-email@gmail.com">
+
+    <label for="gmail_app_password">App Password Gmail</label>
+    <input type="password" id="gmail_app_password" name="gmail_app_password"
+           value="{{ config.gmail_app_password or '' }}" placeholder="xxxx xxxx xxxx xxxx">
+    <small>Wygeneruj na: <a href="https://myaccount.google.com/apppasswords" target="_blank">myaccount.google.com/apppasswords</a></small>
+
+    <h3>Klucz API Anthropic (Claude)</h3>
+
+    <label for="anthropic_api_key">Klucz API</label>
+    <input type="password" id="anthropic_api_key" name="anthropic_api_key"
+           value="{{ config.anthropic_api_key or '' }}" placeholder="sk-ant-...">
+    <small>Wygeneruj na: <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a></small>
+
+    <h3>Ustawienia ogólne</h3>
+
+    <label for="polling_interval">Interwał pollingu (sekundy)</label>
+    <input type="number" id="polling_interval" name="polling_interval_seconds"
+           value="{{ config.polling_interval_seconds }}" min="10" max="600">
+
+    <label for="escalation_email">E-mail eskalacji (dział AP/AR)</label>
+    <input type="email" id="escalation_email" name="escalation_email"
+           value="{{ config.escalation_email }}">
+
+    <label for="max_email_length">Maks. długość e-maila (znaki)</label>
+    <input type="number" id="max_email_length" name="max_email_length"
+           value="{{ config.max_email_length }}" min="500" max="10000">
+
+    <label for="anthropic_model">Model Anthropic</label>
+    <input type="text" id="anthropic_model" name="anthropic_model"
+           value="{{ config.anthropic_model }}">
+
+    <label for="response_tone">Ton odpowiedzi</label>
+    <select id="response_tone" name="response_tone">
+        <option value="profesjonalny i uprzejmy" {{ 'selected' if config.response_tone == 'profesjonalny i uprzejmy' }}>Profesjonalny i uprzejmy</option>
+        <option value="formalny" {{ 'selected' if config.response_tone == 'formalny' }}>Formalny</option>
+        <option value="przyjazny" {{ 'selected' if config.response_tone == 'przyjazny' }}>Przyjazny</option>
+        <option value="zwięzły" {{ 'selected' if config.response_tone == 'zwięzły' }}>Zwięzły</option>
+    </select>
+
+    <h3>Autoryzowane domeny</h3>
+    <p><small>Każda linia: <code>domena = Nazwa klienta</code></small></p>
+    <textarea id="allowed_domains" name="allowed_domains" rows="8">{% for domain, name in config.allowed_domains.items() %}{{ domain }} = {{ name }}
+{% endfor %}</textarea>
+
+    <button type="submit">Zapisz konfigurację</button>
+</form>
+{% endblock %}

@@ -1,0 +1,47 @@
+/* Bot AI — minimal custom styles */
+
+nav {
+    border-bottom: 2px solid var(--pico-primary);
+    margin-bottom: 1rem;
+}
+
+.flash-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.flash-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.flash-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    padding: 0.75rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+table {
+    font-size: 0.85rem;
+}
+
+textarea {
+    font-family: monospace;
+    font-size: 0.9rem;
+}
+
+footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+    text-align: center;
+    opacity: 0.7;
+}

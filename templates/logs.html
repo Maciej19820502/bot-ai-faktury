@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Logi — Bot AI{% endblock %}
+
+{% block content %}
+<h2>Logi i audyt</h2>
+
+<form method="get" action="/logs" class="grid">
+    <div>
+        <label for="date_from">Od daty</label>
+        <input type="date" id="date_from" name="date_from" value="{{ date_from }}">
+    </div>
+    <div>
+        <label for="date_to">Do daty</label>
+        <input type="date" id="date_to" name="date_to" value="{{ date_to }}">
+    </div>
+    <div>
+        <label for="sender">Nadawca (fragment)</label>
+        <input type="text" id="sender" name="sender" value="{{ sender }}">
+    </div>
+    <div>
+        <label>&nbsp;</label>
+        <button type="submit">Filtruj</button>
+    </div>
+</form>
+
+<figure>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Czas</th>
+            <th>Nadawca</th>
+            <th>Temat</th>
+            <th>Klasyfikacja</th>
+            <th>Pewność</th>
+            <th>Autor.</th>
+            <th>Faktury</th>
+            <th>Akcja</th>
+            <th>Czas [ms]</th>
+            <th>Błąd</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in logs %}
+        <tr>
+            <td>{{ log.id }}</td>
+            <td>{{ log.timestamp[:19] }}</td>
+            <td>{{ log.sender_email }}</td>
+            <td title="{{ log.subject }}">{{ log.subject[:30] }}</td>
+            <td>{{ log.classification }}</td>
+            <td>{{ "%.0f%%"|format(log.confidence * 100) if log.confidence else "-" }}</td>
+            <td>{{ "Tak" if log.authorized else "Nie" }}</td>
+            <td>{{ log.invoices_found or "-" }}</td>
+            <td>{{ log.action_taken }}</td>
+            <td>{{ log.processing_time_ms }}</td>
+            <td title="{{ log.error }}">{{ log.error[:20] if log.error else "-" }}</td>
+        </tr>
+        {% endfor %}
+        {% if not logs %}
+        <tr><td colspan="11">Brak wpisów spełniających kryteria.</td></tr>
+        {% endif %}
+    </tbody>
+</table>
+</figure>
+
+{% if logs %}
+<details>
+    <summary>Szczegóły ostatniego wpisu</summary>
+    <article>
+        <h4>Odpowiedź wysłana</h4>
+        <pre>{{ logs[0].response_sent or "(brak)" }}</pre>
+        {% if logs[0].error %}
+        <h4>Błąd</h4>
+        <pre>{{ logs[0].error }}</pre>
+        {% endif %}
+    </article>
+</details>
+{% endif %}
+{% endblock %}
